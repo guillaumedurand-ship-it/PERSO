@@ -34,7 +34,10 @@
       <div class="status"><div class="badge"><strong id="total">0 / 26</strong> points traités</div><div class="progress-track" aria-label="Progression"><i id="bar"></i></div></div>
     </header>
     <div class="content">
-      <aside class="actions" aria-label="Actions de la checklist"><div id="weather-widget"></div><h2>Prêt à partir ?</h2><p id="asideText">Chaque point doit être OK ou N/A pour pouvoir partir.</p><div class="all-done" id="allDone"><span class="flag">🚩</span><strong>Tout est en ordre, même les N/A !</strong><br>Vous pouvez partir l’esprit léger.</div><button class="button primary" id="checkAll">Tout marquer OK</button><button class="button" id="reset">Recommencer la vérification</button></aside>
+      <aside class="actions" aria-label="Actions de la checklist">
+        <div id="weather-widget" style="background: var(--paper); border: 1px solid var(--pine); border-radius: 22px; padding: 23px; margin-bottom: 24px; box-shadow: var(--shadow);"></div>
+        <h2>Prêt à partir ?</h2><p id="asideText">Chaque point doit être OK ou N/A pour pouvoir partir.</p><div class="all-done" id="allDone"><span class="flag">🚩</span><strong>Tout est en ordre, même les N/A !</strong><br>Vous pouvez partir l’esprit léger.</div><button class="button primary" id="checkAll">Tout marquer OK</button><button class="button" id="reset">Recommencer la vérification</button>
+      </aside>
       <main class="checklist" id="checklist"></main>
     </div>
     <footer>La checklist est enregistrée sur cet appareil jusqu’à votre prochaine vérification.</footer>

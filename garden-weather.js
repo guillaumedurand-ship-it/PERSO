@@ -34,12 +34,12 @@ function renderWeatherWidget(data) {
   const currentMonth = new Date().getMonth();
   const seasonalAdvice = GARDEN_TASKS[currentMonth];
 
+  // Create mode-heading similar to mode-cards in index.html
   let html = `
-    <div style="background: var(--paper); border: 1px solid var(--forest-light); border-radius: 22px; padding: 23px; margin: 20px 0; box-shadow: var(--shadow);">
-      <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--forest); display: flex; align-items: center; gap: 10px;">
-        <span aria-hidden="true" style="font-size: 1.5rem; background: #e6f0e6; border-radius: 12px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;">🌤️</span>
-        Météo & Jardin
-      </h3>
+    <div class="mode-heading">
+      <span class="mode-icon" aria-hidden="true">🌤️</span>
+      <h2>Météo & Jardin</h2>
+    </div>
   `;
 
   if (data) {
@@ -50,18 +50,18 @@ function renderWeatherWidget(data) {
     const isFreezingExpected = minTemps.some(temp => temp <= 1);
 
     html += `
-      <p style="margin: 0 0 10px; color: var(--ink);"><strong>Actuellement :</strong> ${currentTemp}°C</p>
+      <p>Actuellement : <strong>${currentTemp}°C</strong></p>
     `;
 
     if (isFreezingExpected) {
       html += `
-        <div style="background: #fdf2f2; border: 1px solid #f9d8d8; border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+        <div style="background: #fdf2f2; border: 1px solid #f9d8d8; border-radius: 12px; padding: 12px; margin: 15px 0;">
           <p style="margin: 0; color: #a93232; font-weight: bold; display: flex; align-items: center; gap: 8px;">
             <span aria-hidden="true">❄️</span>
-            Alerte Gel : Température ≤ 1°C prévue dans les 72h !
+            Alerte Gel : ≤ 1°C dans les 72h !
           </p>
-          <p style="margin: 8px 0 0; color: #a93232; font-size: 0.9rem;">
-            N'oubliez pas de rentrer les plantes sensibles et de <strong>purger les robinets extérieurs</strong>.
+          <p style="margin: 6px 0 0; color: #a93232; font-size: 0.8rem; line-height: 1.3;">
+            Rentrez les plantes gélives et <strong>purgez les robinets ext.</strong>
           </p>
         </div>
       `;
@@ -69,15 +69,14 @@ function renderWeatherWidget(data) {
   } else {
     // Offline fallback
     html += `
-      <p style="margin: 0 0 15px; color: var(--muted); font-size: 0.9rem;"><em>Météo indisponible (mode hors-ligne)</em></p>
+      <p style="font-size: 0.9rem; margin-top: 15px;"><em>Météo indisponible (hors-ligne)</em></p>
     `;
   }
 
   html += `
-      <div style="background: #f5f8f5; border-radius: 12px; padding: 15px;">
-        <h4 style="margin: 0 0 8px; color: var(--forest-light); font-size: 0.95rem;">🌱 Conseil du mois</h4>
-        <p style="margin: 0; color: var(--ink); font-size: 0.9rem; line-height: 1.4;">${seasonalAdvice}</p>
-      </div>
+    <div style="background: #e4f4e7; border-radius: 12px; padding: 12px; margin-top: 15px;">
+      <h4 style="margin: 0 0 6px; color: #20613f; font-size: 0.85rem;">🌱 Conseil du mois</h4>
+      <p style="margin: 0; color: #20613f; font-size: 0.8rem; line-height: 1.3;">${seasonalAdvice}</p>
     </div>
   `;
 
