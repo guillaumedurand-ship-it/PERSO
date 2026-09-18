@@ -11,7 +11,8 @@ const ASSETS_TO_CACHE = [
   '/manifest.webmanifest',
   '/new-index.png',
   '/tourism.png',
-  '/garden-weather.js'
+  '/garden-weather.js',
+  '/hero-image.jpg'
 ];
 
 self.addEventListener('install', (event) => {
