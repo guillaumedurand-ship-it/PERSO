@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173e36">
+  <title>La Gévraisière · Mode Assistant</title>
+  <style>
+    :root {
+      --forest:#173e36; --pine:#28604f; --paper:#fffdf8; --ink:#18332e; --muted:#67776f;
+      --line:#d8dfd6; --green:#21824b; --red:#bd3f3e; --yellow:#946a16;
+      --shadow:0 10px 30px rgba(23,62,54,.08);
+      --bot-bg: #fff; --user-bg: #e2f5e8;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; height: 100vh; display: flex; flex-direction: column;
+      color:var(--ink); background:#f4f6f3;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    }
+    .header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:15px 20px; background:var(--forest); color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10;
+    }
+    .header .brand { font-size:1rem; font-weight:800; }
+    .header .home { color: #d6e6cc; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+    .header .restart {
+      padding:6px 12px; border:1px solid #ffffff55; border-radius:8px;
+      color:#fff; background:transparent; cursor:pointer; font-weight:600; font-size: 0.85rem;
+    }
+
+    .chat-container {
+      flex: 1; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth;
+    }
+
+    .msg { max-width: 85%; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; align-items: flex-end; }
+
+    .bubble {
+      padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.4;
+      box-shadow: var(--shadow); position: relative;
+    }
+    .msg.bot .bubble { background: var(--bot-bg); color: var(--ink); border-bottom-left-radius: 4px; }
+    .msg.user .bubble { background: var(--forest); color: #fff; border-bottom-right-radius: 4px; }
+
+    .msg-icon { margin-right: 6px; font-size: 1.1em; }
+    .msg-cat { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .msg.bot .msg-cat { margin-left: 12px; }
+    .msg.user .msg-cat { display: none; }
+
+    .input-area {
+      padding: 15px 20px; background: #fff; border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .answer {
+      min-height: 54px; border: 2px solid var(--line); border-radius: 12px;
+      background: #fff; cursor: pointer; font-size: 0.95rem; font-weight: 800;
+      transition: .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .answer:disabled { opacity: 0.5; cursor: not-allowed; }
+    .answer:not(:disabled):hover { transform:translateY(-2px); border-color:#8a9a8f; }
+    .answer:focus-visible { outline:3px solid #e0ae3a; outline-offset:2px; }
+    .answer.ok { color: var(--green); }
+    .answer.ko { color: var(--red); }
+    .answer.na { color: var(--yellow); }
+
+    .summary-box {
+      margin-top: 10px; padding: 15px; border-radius: 12px; background: #f0f4f1;
+      text-align: center; border: 1px solid #d1dbd4;
+    }
+    .summary-box h3 { margin: 0 0 10px 0; font-size: 1.1rem; color: var(--pine); }
+    .pill-group { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+    .pill { padding: 6px 12px; border-radius: 99px; background: #fff; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .pill.ko { background: #ffe4e2; color: #8e2828; }
+    .pill.ok { background: #e2f5e8; color: #17613a; }
+    .action-btn {
+      padding: 10px 20px; border: none; border-radius: 8px; background: var(--forest);
+      color: #fff; font-weight: 700; cursor: pointer; width: 100%;
+    }
+
+    .typing { display: none; align-items: center; gap: 4px; height: 24px; padding: 0 8px; }
+    .typing span { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; animation: blink 1.4s infinite both; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="home">← Accueil</a>
+    <div class="brand">La Gévraisière</div>
+    <button class="restart" id="reset">Reset</button>
+  </header>
+
+  <div class="chat-container" id="chat">
+    <!-- Messages will appear here -->
+  </div>
+
+  <div class="input-area" id="inputs">
+    <button class="answer ok" data-answer="ok" disabled>✓ OK</button>
+    <button class="answer ko" data-answer="ko" disabled>✕ KO</button>
+    <button class="answer na" data-answer="na" disabled>— N/A</button>
+  </div>
+
+  <script>
+    const groups=[
+      ['Salles de bains','🛁',['Récupérer le linge humide','Vider les poubelles des SdB']],
+      ['Chambres','🛏️',['Tirer les lits du mur','Retirer les draps des lits (à valider avec Maman)','Fermer les Velux (incluant celui de la salle de bains)']],
+      ['Salon','🛋️',['Enlever les cendres de la cheminée','Couvrir les 3 canapés']],
+      ['Extérieur','🌿',["Ranger les outils Makita à l'intérieur de la maison ou dans l’atelier","Ranger la plancha (dans l'atelier)","Vérifier l'appentis (ne rien laisser dehors)","Fermer l'atelier (et laisser la clé dans la cuisine)"]],
+      ['Cuisine','🍽️',['Vider cafetière Nespresso','Vider le frigo','Faire une photo du frigo','Laisser le lave-vaisselle ouvert',"Couvrir l'électroménager avec leur housse",'Ne pas laisser de pain et de nourriture dans la cuisine ! (souris)','Sortir les poubelles','Couper le chauffe-eau au compteur (baisser le bouton « chauffe-eau »)']],
+      ['Check final','🔐',['Vérifier les radiateurs (mode auto/maison)','Fermer les volets (avec les barres)','Fermer aussi le volet des WC !','Mettre les protections sur les portes','Fermer la porte du séjour à clefs',"Fermer la porte d'entrée à clefs",'Régler le programme de chauffage sur l’app Voltalis (Guiom)']]
+    ];
+    const questions=groups.flatMap(([category,icon,items])=>items.map(text=>({category,icon,text})));
+    const key='gevraisiere-chat-quiz';
+
+    let answers=JSON.parse(localStorage.getItem(key)||'{}');
+    let current=Object.keys(answers).length;
+
+    const chat=document.getElementById('chat');
+    const inputs=document.getElementById('inputs');
+    const buttons=document.querySelectorAll('.answer');
+
+    function scrollToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function createBotMsg(html, category = '') {
+      const div = document.createElement('div');
+      div.className = 'msg bot';
+      let catHtml = category ? `<div class="msg-cat">${category}</div>` : '';
+      div.innerHTML = `${catHtml}<div class="bubble">${html}</div>`;
+      chat.appendChild(div);
+      scrollToBottom();
+    }
+
+    function createUserMsg(text) {
+      const div = document.createElement('div');
+      div.className = 'msg user';
+      div.innerHTML = `<div class="bubble">${text}</div>`;
+      chat.appendChild(div);
+      scrollToBottom();
+    }
+
+    function setButtonsState(enabled) {
+      buttons.forEach(b => b.disabled = !enabled);
+    }
+
+    function showTyping(callback, delay=600) {
+      setButtonsState(false);
+      const div = document.createElement('div');
+      div.className = 'msg bot typing-msg';
+      div.innerHTML = `<div class="bubble"><div class="typing" style="display:flex;"><span></span><span></span><span></span></div></div>`;
+      chat.appendChild(div);
+      scrollToBottom();
+
+      setTimeout(() => {
+        div.remove();
+        callback();
+      }, delay);
+    }
+
+    function askQuestion(index) {
+      if(index >= questions.length) {
+        showResult();
+        return;
+      }
+      const item = questions[index];
+      const html = `<span class="msg-icon">${item.icon}</span> <strong>${item.text}</strong>`;
+
+      showTyping(() => {
+        createBotMsg(html, item.category);
+        setButtonsState(true);
+      });
+    }
+
+    function initChat() {
+      chat.innerHTML = '';
+      if(current === 0) {
+        createBotMsg("👋 Bonjour ! Je suis l'assistant de La Gévraisière. Faisons le tour ensemble avant de partir.");
+        askQuestion(0);
+      } else {
+        // Rebuild history
+        let lastCategory = '';
+        createBotMsg("👋 Bonjour ! Je suis l'assistant de La Gévraisière. Faisons le tour ensemble avant de partir.");
+
+        for(let i=0; i<current; i++) {
+          const item = questions[i];
+          const ans = answers[i];
+
+          let cat = item.category !== lastCategory ? item.category : '';
+          lastCategory = item.category;
+
+          const botHtml = `<span class="msg-icon">${item.icon}</span> <strong>${item.text}</strong>`;
+
+          const botDiv = document.createElement('div');
+          botDiv.className = 'msg bot';
+          botDiv.innerHTML = (cat ? `<div class="msg-cat">${cat}</div>` : '') + `<div class="bubble">${botHtml}</div>`;
+          chat.appendChild(botDiv);
+
+          let ansText = ans==='ok' ? '✓ OK' : (ans==='ko' ? '✕ KO' : '— N/A');
+          const userDiv = document.createElement('div');
+          userDiv.className = 'msg user';
+          userDiv.innerHTML = `<div class="bubble">${ansText}</div>`;
+          chat.appendChild(userDiv);
+        }
+
+        if (current < questions.length) {
+          askQuestion(current);
+        } else {
+          showResult(false);
+        }
+      }
+    }
+
+    function showResult(animate=true) {
+      setButtonsState(false);
+      const ok = Object.values(answers).filter(a=>a==='ok').length;
+      const na = Object.values(answers).filter(a=>a==='na').length;
+      const ko = Object.values(answers).filter(a=>a==='ko').length;
+      const ready = ko === 0 && Object.keys(answers).length === questions.length;
+
+      const render = () => {
+        let text = ready
+          ? "🚩 Parfait ! Toutes les étapes sont validées. Vous pouvez partir l'esprit léger !"
+          : `🔎 Il reste des points à régler avant de partir en paix.`;
+
+        let summaryHtml = `
+          <div class="summary-box">
+            <h3>Bilan</h3>
+            <p>${text}</p>
+            <div class="pill-group">
+              <span class="pill ok">${ok} OK</span>
+              <span class="pill">${na} N/A</span>
+              ${ko > 0 ? `<span class="pill ko">${ko} KO</span>` : ''}
+            </div>
+            ${ko > 0 ? `<button class="action-btn" onclick="reviewKO()">Revoir les KO</button>` : ''}
+          </div>
+        `;
+        createBotMsg(summaryHtml);
+      };
+
+      if(animate) showTyping(render, 800);
+      else render();
+    }
+
+    window.reviewKO = function() {
+      // Find first KO
+      current = questions.findIndex((_,i)=>answers[i]==='ko');
+      if(current < 0) current = 0;
+
+      // Delete answers from current onwards to restart from that point
+      for(let i=current; i<questions.length; i++) {
+        delete answers[i];
+      }
+      localStorage.setItem(key, JSON.stringify(answers));
+
+      initChat();
+    };
+
+    inputs.addEventListener('click', e => {
+      const button = e.target.closest('[data-answer]');
+      if(!button || button.disabled) return;
+
+      const val = button.dataset.answer;
+      answers[current] = val;
+      localStorage.setItem(key, JSON.stringify(answers));
+
+      let text = val==='ok' ? '✓ OK' : (val==='ko' ? '✕ KO' : '— N/A');
+      createUserMsg(text);
+
+      setButtonsState(false);
+      current++;
+
+      setTimeout(() => {
+        askQuestion(current);
+      }, 300);
+    });
+
+    document.getElementById('reset').onclick = () => {
+      if(confirm('Effacer la conversation et recommencer ?')){
+        answers = {};
+        current = 0;
+        localStorage.removeItem(key);
+        initChat();
+      }
+    };
+
+    // Start
+    initChat();
+  </script>
+</body>
+</html>
