@@ -141,10 +141,34 @@
       line-height: 1.5;
     }
 
+    .mode-list.compact .mode-card {
+      padding: 16px;
+    }
+    .mode-list.compact .mode-icon {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      font-size: 1.4rem;
+      border-radius: 12px;
+    }
+    .mode-list.compact h2 {
+      font-size: 1.1rem;
+    }
+    .mode-list.compact p {
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+    .mode-list.compact .tag {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+    }
+
     @media (min-width: 620px) {
       main { padding-top: 68px; }
       .mode-list { grid-template-columns: 1fr 1fr; }
       .mode-card { min-height: 285px; }
+      .mode-list.compact .mode-card { min-height: auto; }
       .mode-heading { align-items: flex-start; }
     }
   </style>
@@ -182,7 +206,7 @@
     </section>
 
     <h3 style="margin-top: 40px; color: var(--forest); font-size: 1.2rem;">Rituels de départ</h3>
-    <section class="mode-list" aria-label="Choisir un mode de checklist">
+    <section class="mode-list compact" aria-label="Choisir un mode de checklist">
       <a class="mode-card" href="gevraisiere.html">
         <div class="mode-heading">
           <span class="mode-icon" aria-hidden="true">☑️</span>
