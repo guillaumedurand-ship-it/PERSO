@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
   '/tourism.html',
   '/chat-mode.html',
   '/checkout-options.html',
+  '/histoire.html',
   '/manifest.webmanifest',
   '/new-index.png',
   '/tourism.png',
