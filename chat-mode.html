@@ -6,58 +6,58 @@
   <meta name="theme-color" content="#173e36">
   <title>La Gévraisière · Mode Assistant</title>
   <style>
-    :root {
-      --forest:#173e36; --pine:#28604f; --paper:#fffdf8; --ink:#18332e; --muted:#67776f;
-      --line:#d8dfd6; --green:#21824b; --red:#bd3f3e; --yellow:#946a16;
+    :root { 
+      --forest:#173e36; --pine:#28604f; --paper:#fffdf8; --ink:#18332e; --muted:#67776f; 
+      --line:#d8dfd6; --green:#21824b; --red:#bd3f3e; --yellow:#946a16; 
       --shadow:0 10px 30px rgba(23,62,54,.08);
       --bot-bg: #fff; --user-bg: #e2f5e8;
     }
-    * { box-sizing:border-box; }
-    body {
+    * { box-sizing:border-box; } 
+    body { 
       margin:0; height: 100vh; display: flex; flex-direction: column;
-      color:var(--ink); background:#f4f6f3;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      color:var(--ink); background:#f4f6f3; 
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; 
     }
-    .header {
-      display:flex; align-items:center; justify-content:space-between;
+    .header { 
+      display:flex; align-items:center; justify-content:space-between; 
       padding:15px 20px; background:var(--forest); color: #fff;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10;
     }
     .header .brand { font-size:1rem; font-weight:800; }
     .header .home { color: #d6e6cc; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
-    .header .restart {
-      padding:6px 12px; border:1px solid #ffffff55; border-radius:8px;
+    .header .restart { 
+      padding:6px 12px; border:1px solid #ffffff55; border-radius:8px; 
       color:#fff; background:transparent; cursor:pointer; font-weight:600; font-size: 0.85rem;
     }
-
-    .chat-container {
+    
+    .chat-container { 
       flex: 1; overflow-y: auto; padding: 20px;
       display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth;
     }
-
+    
     .msg { max-width: 85%; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
     .msg.bot { align-self: flex-start; }
     .msg.user { align-self: flex-end; align-items: flex-end; }
-
-    .bubble {
+    
+    .bubble { 
       padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.4;
       box-shadow: var(--shadow); position: relative;
     }
     .msg.bot .bubble { background: var(--bot-bg); color: var(--ink); border-bottom-left-radius: 4px; }
     .msg.user .bubble { background: var(--forest); color: #fff; border-bottom-right-radius: 4px; }
-
+    
     .msg-icon { margin-right: 6px; font-size: 1.1em; }
     .msg-cat { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
     .msg.bot .msg-cat { margin-left: 12px; }
     .msg.user .msg-cat { display: none; }
-
-    .input-area {
+    
+    .input-area { 
       padding: 15px 20px; background: #fff; border-top: 1px solid var(--line);
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
     }
-    .answer {
-      min-height: 54px; border: 2px solid var(--line); border-radius: 12px;
-      background: #fff; cursor: pointer; font-size: 0.95rem; font-weight: 800;
+    .answer { 
+      min-height: 54px; border: 2px solid var(--line); border-radius: 12px; 
+      background: #fff; cursor: pointer; font-size: 0.95rem; font-weight: 800; 
       transition: .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .answer:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -66,9 +66,9 @@
     .answer.ok { color: var(--green); }
     .answer.ko { color: var(--red); }
     .answer.na { color: var(--yellow); }
-
-    .summary-box {
-      margin-top: 10px; padding: 15px; border-radius: 12px; background: #f0f4f1;
+    
+    .summary-box { 
+      margin-top: 10px; padding: 15px; border-radius: 12px; background: #f0f4f1; 
       text-align: center; border: 1px solid #d1dbd4;
     }
     .summary-box h3 { margin: 0 0 10px 0; font-size: 1.1rem; color: var(--pine); }
@@ -76,8 +76,8 @@
     .pill { padding: 6px 12px; border-radius: 99px; background: #fff; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .pill.ko { background: #ffe4e2; color: #8e2828; }
     .pill.ok { background: #e2f5e8; color: #17613a; }
-    .action-btn {
-      padding: 10px 20px; border: none; border-radius: 8px; background: var(--forest);
+    .action-btn { 
+      padding: 10px 20px; border: none; border-radius: 8px; background: var(--forest); 
       color: #fff; font-weight: 700; cursor: pointer; width: 100%;
     }
 
@@ -118,14 +118,14 @@
     ];
     const questions=groups.flatMap(([category,icon,items])=>items.map(text=>({category,icon,text})));
     const key='gevraisiere-chat-quiz';
-
+    
     let answers=JSON.parse(localStorage.getItem(key)||'{}');
     let current=Object.keys(answers).length;
-
+    
     const chat=document.getElementById('chat');
     const inputs=document.getElementById('inputs');
     const buttons=document.querySelectorAll('.answer');
-
+    
     function scrollToBottom() {
       chat.scrollTop = chat.scrollHeight;
     }
@@ -158,7 +158,7 @@
       div.innerHTML = `<div class="bubble"><div class="typing" style="display:flex;"><span></span><span></span><span></span></div></div>`;
       chat.appendChild(div);
       scrollToBottom();
-
+      
       setTimeout(() => {
         div.remove();
         callback();
@@ -172,7 +172,7 @@
       }
       const item = questions[index];
       const html = `<span class="msg-icon">${item.icon}</span> <strong>${item.text}</strong>`;
-
+      
       showTyping(() => {
         createBotMsg(html, item.category);
         setButtonsState(true);
@@ -188,28 +188,28 @@
         // Rebuild history
         let lastCategory = '';
         createBotMsg("👋 Bonjour ! Je suis l'assistant de La Gévraisière. Faisons le tour ensemble avant de partir.");
-
+        
         for(let i=0; i<current; i++) {
           const item = questions[i];
           const ans = answers[i];
-
+          
           let cat = item.category !== lastCategory ? item.category : '';
           lastCategory = item.category;
-
+          
           const botHtml = `<span class="msg-icon">${item.icon}</span> <strong>${item.text}</strong>`;
-
+          
           const botDiv = document.createElement('div');
           botDiv.className = 'msg bot';
           botDiv.innerHTML = (cat ? `<div class="msg-cat">${cat}</div>` : '') + `<div class="bubble">${botHtml}</div>`;
           chat.appendChild(botDiv);
-
+          
           let ansText = ans==='ok' ? '✓ OK' : (ans==='ko' ? '✕ KO' : '— N/A');
           const userDiv = document.createElement('div');
           userDiv.className = 'msg user';
           userDiv.innerHTML = `<div class="bubble">${ansText}</div>`;
           chat.appendChild(userDiv);
         }
-
+        
         if (current < questions.length) {
           askQuestion(current);
         } else {
@@ -224,12 +224,12 @@
       const na = Object.values(answers).filter(a=>a==='na').length;
       const ko = Object.values(answers).filter(a=>a==='ko').length;
       const ready = ko === 0 && Object.keys(answers).length === questions.length;
-
+      
       const render = () => {
-        let text = ready
+        let text = ready 
           ? "🚩 Parfait ! Toutes les étapes sont validées. Vous pouvez partir l'esprit léger !"
           : `🔎 Il reste des points à régler avant de partir en paix.`;
-
+          
         let summaryHtml = `
           <div class="summary-box">
             <h3>Bilan</h3>
@@ -253,30 +253,30 @@
       // Find first KO
       current = questions.findIndex((_,i)=>answers[i]==='ko');
       if(current < 0) current = 0;
-
+      
       // Delete answers from current onwards to restart from that point
       for(let i=current; i<questions.length; i++) {
         delete answers[i];
       }
       localStorage.setItem(key, JSON.stringify(answers));
-
+      
       initChat();
     };
 
     inputs.addEventListener('click', e => {
       const button = e.target.closest('[data-answer]');
       if(!button || button.disabled) return;
-
+      
       const val = button.dataset.answer;
       answers[current] = val;
       localStorage.setItem(key, JSON.stringify(answers));
-
+      
       let text = val==='ok' ? '✓ OK' : (val==='ko' ? '✕ KO' : '— N/A');
       createUserMsg(text);
-
+      
       setButtonsState(false);
       current++;
-
+      
       setTimeout(() => {
         askQuestion(current);
       }, 300);

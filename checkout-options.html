@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-store, max-age=0">
   <meta name="theme-color" content="#173e36">
   <link rel="manifest" href="manifest.webmanifest">
-  <title>La Gévraisière · Checklist de départ</title>
+  <title>Options de Checklist · La Gévraisière</title>
   <style>
     :root {
       --forest: #173e36;
@@ -134,46 +134,22 @@
       font-weight: 850;
     }
 
-    footer {
-      margin-top: 34px;
-      color: var(--muted);
-      font-size: .81rem;
-      line-height: 1.5;
-    }
-
-    .discrete-checkout-link {
+    .back-link {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-top: 30px;
-      color: var(--forest-light);
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background 0.15s ease;
-    }
-
-    .discrete-checkout-link:hover {
-      background: #e6f0e6;
-    }
-
-    .hero-img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 22px;
-      box-shadow: var(--shadow);
       margin-bottom: 24px;
+      color: var(--forest);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
     }
 
     @media (min-width: 620px) {
-      main { padding-top: 48px; }
-      .hero-img {
-        height: 360px;
-        margin-bottom: 32px;
-      }
+      main { padding-top: 68px; }
       .mode-list { grid-template-columns: 1fr 1fr; }
       .mode-card { min-height: 285px; }
       .mode-heading { align-items: flex-start; }
@@ -182,64 +158,50 @@
 </head>
 <body>
   <main>
-    <img src="hero-image.jpg" alt="La Gévraisière" class="hero-img">
-    <p class="eyebrow">Maison de campagne</p>
-    <h1>Bienvenue à<br>La Gévraisière.</h1>
+    <a href="index.html" class="back-link">← Retour</a>
+    <p class="eyebrow">Rituels de départ</p>
+    <h1>Perform check-out</h1>
     <p class="intro">
-      Retrouvez ici toutes les informations utiles pour votre séjour et préparer votre départ en toute sérénité.
+      Choisissez la méthode qui vous convient le mieux pour fermer la maison.
     </p>
 
-    <section class="mode-list" aria-label="Menu principal">
-      <a class="mode-card" href="https://maps.google.com/?q=1,+la+Gevraisi%C3%A8re+28290+CHAPELLE-ROYALE" target="_blank" rel="noopener">
+    <section class="mode-list" aria-label="Choisir un mode de checklist">
+      <a class="mode-card" href="gevraisiere.html">
         <div class="mode-heading">
-          <span class="mode-icon" aria-hidden="true">📍</span>
-          <h2>Plan d'accès</h2>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </div>
-        <p>1, la Gevraisière<br>28290 CHAPELLE-ROYALE</p>
-        <span class="tag">Google Maps</span>
-      </a>
-
-      <div id="weather-widget" class="mode-card" style="text-decoration: none;"></div>
-
-      <a class="mode-card" href="tourism.html">
-        <div class="mode-heading">
-          <span class="mode-icon" aria-hidden="true">🗺️</span>
-          <h2>Guide touristique</h2>
+          <span class="mode-icon" aria-hidden="true">☑️</span>
+          <h2>Checklist complète</h2>
           <span class="arrow" aria-hidden="true">→</span>
         </div>
-        <p>Découvrez les activités clés, lieux remarquables et visites à faire à 50km à la ronde.</p>
-        <span class="tag">Autour de la maison</span>
+        <p>Voir toutes les pièces et toutes les actions d’un seul coup d’œil.</p>
+        <span class="tag">Vue par catégories</span>
       </a>
 
-      <a class="mode-card" href="histoire.html">
+      <a class="mode-card" href="checkout-quizz.html">
         <div class="mode-heading">
-          <span class="mode-icon" aria-hidden="true">📜</span>
-          <h2>Un peu d'histoire</h2>
+          <span class="mode-icon" aria-hidden="true">🕹️</span>
+          <h2>Mode guidé</h2>
           <span class="arrow" aria-hidden="true">→</span>
         </div>
-        <p>Origines, étymologie & secrets du domaine.</p>
-        <span class="tag">Histoire locale</span>
+        <p>Une question après l’autre, avec de grands boutons OK, KO et N/A.</p>
+        <span class="tag">26 étapes, une par une</span>
+      </a>
+
+      <a class="mode-card" href="chat-mode.html">
+        <div class="mode-heading">
+          <span class="mode-icon" aria-hidden="true">💬</span>
+          <h2>Mode Assistant</h2>
+          <span class="arrow" aria-hidden="true">→</span>
+        </div>
+        <p>Une conversation guidée avec la maison, comme par SMS.</p>
+        <span class="tag">Interface conversationnelle</span>
       </a>
     </section>
-    
-    <div>
-      <a href="checkout-options.html" class="discrete-checkout-link">
-        <span aria-hidden="true">☑️</span> Lien vers les rituels de départ
-      </a>
-    </div>
 
-    <footer>Les réponses des checklists sont enregistrées uniquement sur cet appareil.</footer>
   </main>
-  <script src="garden-weather.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-          console.log('SW registered: ', registration);
-        }).catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
-        });
+        navigator.serviceWorker.register('/sw.js');
       });
     }
   </script>

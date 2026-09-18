@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#173e36">
+  <link rel="manifest" href="manifest.webmanifest">
   <title>La Gévraisière · Checklist de départ</title>
   <style>
     :root { --forest:#173e36; --pine:#28564a; --paper:#fffdf8; --ink:#18332e; --muted:#66766f; --line:#d7ddd4; --sun:#d69220; --green:#21824b; --green-soft:#e1f3e7; --red:#b93b3b; --red-soft:#fde8e7; --na:#936b1b; --na-soft:#fff2cf; --shadow:0 15px 40px rgba(32,65,55,.11); }
@@ -33,7 +34,10 @@
       <div class="status"><div class="badge"><strong id="total">0 / 26</strong> points traités</div><div class="progress-track" aria-label="Progression"><i id="bar"></i></div></div>
     </header>
     <div class="content">
-      <aside class="actions" aria-label="Actions de la checklist"><h2>Prêt à partir ?</h2><p id="asideText">Chaque point doit être OK ou N/A pour pouvoir partir.</p><div class="all-done" id="allDone"><span class="flag">🚩</span><strong>Tout est en ordre, même les N/A !</strong><br>Vous pouvez partir l’esprit léger.</div><button class="button primary" id="checkAll">Tout marquer OK</button><button class="button" id="reset">Recommencer la vérification</button></aside>
+      <aside class="actions" aria-label="Actions de la checklist">
+        <div id="weather-widget" style="background: var(--paper); border: 1px solid var(--pine); border-radius: 22px; padding: 23px; margin-bottom: 24px; box-shadow: var(--shadow);"></div>
+        <h2>Prêt à partir ?</h2><p id="asideText">Chaque point doit être OK ou N/A pour pouvoir partir.</p><div class="all-done" id="allDone"><span class="flag">🚩</span><strong>Tout est en ordre, même les N/A !</strong><br>Vous pouvez partir l’esprit léger.</div><button class="button primary" id="checkAll">Tout marquer OK</button><button class="button" id="reset">Recommencer la vérification</button>
+      </aside>
       <main class="checklist" id="checklist"></main>
     </div>
     <footer>La checklist est enregistrée sur cet appareil jusqu’à votre prochaine vérification.</footer>
@@ -53,6 +57,18 @@
     function update(){ const tasks=[...document.querySelectorAll('.task')], treated=tasks.filter(t=>t.dataset.state).length, ko=tasks.filter(t=>t.dataset.state==='ko').length, ready=tasks.length>0&&tasks.every(t=>t.dataset.state==='ok'||t.dataset.state==='na'); total.textContent=`${treated} / ${tasks.length}`; bar.style.width=`${treated/tasks.length*100}%`; asideText.textContent=ready?'La maison est prête. Bonne route !':ko?`${ko} point${ko>1?'s':''} KO à résoudre avant de partir.`:`${tasks.length-treated} point${tasks.length-treated>1?'s':''} à traiter avant de partir.`; allDone.classList.toggle('show',ready); document.body.classList.toggle('is-ready',ready); document.querySelectorAll('section').forEach(s=>{const tasks=[...s.querySelectorAll('.task')], n=tasks.filter(t=>t.dataset.state).length; s.querySelector('.count').textContent=`${n} / ${tasks.length} traités`;}); localStorage.setItem('gevraisiere-checklist-v2',JSON.stringify(Object.fromEntries(tasks.map(t=>[t.dataset.id,t.dataset.state])))); }
     document.addEventListener('click',e=>{const button=e.target.closest('.choice'); if(!button)return; const task=button.closest('.task'), state=button.dataset.state; task.dataset.state=task.dataset.state===state?'':state; task.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(task.dataset.state===b.dataset.state))); update();});
     document.querySelector('#checkAll').onclick=()=>{document.querySelectorAll('.task').forEach(t=>{t.dataset.state='ok';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state==='ok')));});update();}; document.querySelector('#reset').onclick=()=>{if(confirm('Effacer tous les statuts pour une nouvelle vérification ?')){document.querySelectorAll('.task').forEach(t=>{t.dataset.state='';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed','false'));});update();}}; update();
+  </script>
+  <script src="garden-weather.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
+      });
+    }
   </script>
 </body>
 </html>
