@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gevraisiere-v1';
+const CACHE_NAME = 'gevraisiere-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -10,7 +10,6 @@ const ASSETS_TO_CACHE = [
   '/histoire.html',
   '/manifest.webmanifest',
   '/new-index.png',
-  '/tourism.png',
   '/garden-weather.js',
   '/hero-image.jpg'
 ];
