@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gevraisiere-v1';
+const CACHE_NAME = 'gevraisiere-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -10,7 +10,6 @@ const ASSETS_TO_CACHE = [
   '/histoire.html',
   '/manifest.webmanifest',
   '/new-index.png',
-  '/tourism.png',
   '/garden-weather.js',
   '/hero-image.jpg'
 ];
@@ -39,7 +38,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {

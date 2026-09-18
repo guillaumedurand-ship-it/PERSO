@@ -33,7 +33,7 @@ function renderWeatherWidget(data) {
 
   const currentMonth = new Date().getMonth();
   const seasonalAdvice = GARDEN_TASKS[currentMonth];
-  
+
   // Create mode-heading similar to mode-cards in index.html
   let html = `
     <div class="mode-heading">
@@ -45,10 +45,10 @@ function renderWeatherWidget(data) {
   if (data) {
     const currentTemp = data.current.temperature_2m;
     const minTemps = data.daily.temperature_2m_min;
-    
+
     // Check if temp drops to <= 1°C in next 3 days
     const isFreezingExpected = minTemps.some(temp => temp <= 1);
-    
+
     html += `
       <p>Actuellement : <strong>${currentTemp}°C</strong></p>
     `;
