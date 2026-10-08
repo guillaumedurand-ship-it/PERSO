@@ -85,7 +85,7 @@
       localStorage.setItem('gevraisiere-checklist-v2', JSON.stringify(stateObj));
     }
     document.addEventListener('click',e=>{const button=e.target.closest('.choice'); if(!button)return; const task=button.closest('.task'), state=button.dataset.state; task.dataset.state=task.dataset.state===state?'':state; task.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(task.dataset.state===b.dataset.state))); update();});
-    document.querySelector('#checkAll').onclick=()=>{document.querySelectorAll('.task').forEach(t=>{t.dataset.state='ok';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state==='ok')));});update();}; document.querySelector('#reset').onclick=()=>{if(confirm('Effacer tous les statuts pour une nouvelle vérification ?')){document.querySelectorAll('.task').forEach(t=>{t.dataset.state='';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed','false'));});update();}}; update();
+    const allTasks=document.querySelectorAll('.task'); document.querySelector('#checkAll').onclick=()=>{allTasks.forEach(t=>{t.dataset.state='ok';const c=t.lastElementChild.children;c[0].setAttribute('aria-pressed','true');c[1].setAttribute('aria-pressed','false');c[2].setAttribute('aria-pressed','false');});update();}; document.querySelector('#reset').onclick=()=>{if(confirm('Effacer tous les statuts pour une nouvelle vérification ?')){allTasks.forEach(t=>{t.dataset.state='';const c=t.lastElementChild.children;c[0].setAttribute('aria-pressed','false');c[1].setAttribute('aria-pressed','false');c[2].setAttribute('aria-pressed','false');});update();}}; update();
   </script>
   <script src="garden-weather.js"></script>
   <script>
