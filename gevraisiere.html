@@ -54,7 +54,36 @@
     const list=document.querySelector('#checklist'), total=document.querySelector('#total'), bar=document.querySelector('#bar'), asideText=document.querySelector('#asideText'), allDone=document.querySelector('#allDone');
     const saved=JSON.parse(localStorage.getItem('gevraisiere-checklist-v2')||'{}'); let index=0;
     groups.forEach(([title,icon,items])=>{ const section=document.createElement('section'); section.innerHTML=`<div class="section-top"><div class="room-title"><span class="room-icon" aria-hidden="true">${icon}</span><h2>${title}</h2></div><span class="count">0 / ${items.length} traités</span></div><div class="items"></div>`; const container=section.querySelector('.items'); items.forEach(text=>{const id=`task-${index++}`, state=saved[id]||''; const task=document.createElement('article'); task.className='task'; task.dataset.id=id; task.dataset.state=state; task.innerHTML=`<span class="task-name">${text}</span><div class="choices" role="group" aria-label="État : ${text}"><button class="choice ok" data-state="ok" aria-pressed="${state==='ok'}">✓ OK</button><button class="choice ko" data-state="ko" aria-pressed="${state==='ko'}">✕ KO</button><button class="choice na" data-state="na" aria-pressed="${state==='na'}">— N/A</button></div>`; container.append(task);}); list.append(section); });
-    function update(){ const tasks=[...document.querySelectorAll('.task')], treated=tasks.filter(t=>t.dataset.state).length, ko=tasks.filter(t=>t.dataset.state==='ko').length, ready=tasks.length>0&&tasks.every(t=>t.dataset.state==='ok'||t.dataset.state==='na'); total.textContent=`${treated} / ${tasks.length}`; bar.style.width=`${treated/tasks.length*100}%`; asideText.textContent=ready?'La maison est prête. Bonne route !':ko?`${ko} point${ko>1?'s':''} KO à résoudre avant de partir.`:`${tasks.length-treated} point${tasks.length-treated>1?'s':''} à traiter avant de partir.`; allDone.classList.toggle('show',ready); document.body.classList.toggle('is-ready',ready); document.querySelectorAll('section').forEach(s=>{const tasks=[...s.querySelectorAll('.task')], n=tasks.filter(t=>t.dataset.state).length; s.querySelector('.count').textContent=`${n} / ${tasks.length} traités`;}); localStorage.setItem('gevraisiere-checklist-v2',JSON.stringify(Object.fromEntries(tasks.map(t=>[t.dataset.id,t.dataset.state])))); }
+    function update() {
+      const tasks = [...document.querySelectorAll('.task')];
+      const treated = tasks.filter(t => t.dataset.state).length;
+      const ko = tasks.filter(t => t.dataset.state === 'ko').length;
+      const ready = tasks.length > 0 && tasks.every(t => t.dataset.state === 'ok' || t.dataset.state === 'na');
+
+      total.textContent = `${treated} / ${tasks.length}`;
+      bar.style.width = `${treated / tasks.length * 100}%`;
+
+      if (ready) {
+        asideText.textContent = 'La maison est prête. Bonne route !';
+      } else if (ko) {
+        asideText.textContent = `${ko} point${ko > 1 ? 's' : ''} KO à résoudre avant de partir.`;
+      } else {
+        const remaining = tasks.length - treated;
+        asideText.textContent = `${remaining} point${remaining > 1 ? 's' : ''} à traiter avant de partir.`;
+      }
+
+      allDone.classList.toggle('show', ready);
+      document.body.classList.toggle('is-ready', ready);
+
+      document.querySelectorAll('section').forEach(s => {
+        const sectionTasks = [...s.querySelectorAll('.task')];
+        const n = sectionTasks.filter(t => t.dataset.state).length;
+        s.querySelector('.count').textContent = `${n} / ${sectionTasks.length} traités`;
+      });
+
+      const stateObj = Object.fromEntries(tasks.map(t => [t.dataset.id, t.dataset.state]));
+      localStorage.setItem('gevraisiere-checklist-v2', JSON.stringify(stateObj));
+    }
     document.addEventListener('click',e=>{const button=e.target.closest('.choice'); if(!button)return; const task=button.closest('.task'), state=button.dataset.state; task.dataset.state=task.dataset.state===state?'':state; task.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(task.dataset.state===b.dataset.state))); update();});
     document.querySelector('#checkAll').onclick=()=>{document.querySelectorAll('.task').forEach(t=>{t.dataset.state='ok';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state==='ok')));});update();}; document.querySelector('#reset').onclick=()=>{if(confirm('Effacer tous les statuts pour une nouvelle vérification ?')){document.querySelectorAll('.task').forEach(t=>{t.dataset.state='';t.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed','false'));});update();}}; update();
   </script>
